@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIFA World Cup 2026 Elo Simulator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>🏆 FIFA WORLD CUP 2026 - ELO SIMULATOR 🏆</h1>
+        <p>Elo-based simulation using real FIFA rankings. Home advantage (+175) applied to USA, Mexico, Canada.</p>
+
+        <div class="button-group">
+            <button id="reset-btn">Reset Simulation</button>
+            <button id="ai-sim-btn">🤖 AI Auto-Simulation (Elo)</button>
+            <button id="how-it-works-btn">&#x2753; How It Works</button>
+        </div>
+    </header>
+
+    <!-- How It Works Modal -->
+    <div id="how-modal-overlay" class="modal-overlay" style="display:none;">
+        <div class="modal-box">
+            <button id="how-modal-close" class="modal-close">&times;</button>
+            <h2>&#x1f3c6; How the World Cup 2026 Simulator Works</h2>
+
+            <h3>&#x1f4ca; Match Engine</h3>
+            <p>Every match uses <strong>Elo ratings</strong> from real FIFA rankings to determine the probability of each outcome. Goals are generated using a <strong>Poisson distribution</strong> (like real football analytics), scaled by each team's Elo-based xG.</p>
+
+            <h3>&#x1f3e0; Home Advantage</h3>
+            <p>The three host nations (<strong>USA, Mexico, Canada</strong>) get a <strong>+175 Elo boost</strong> in the group stage, Round of 32, and Round of 16. From the quarter-finals onward, only the <strong>USA</strong> keeps the boost (Mexico and Canada don't host those rounds).</p>
+
+            <h3>&#x23f0; Extra Time &amp; Penalties</h3>
+            <p>Knockout draws go to <strong>extra time</strong> with a 1.25&times; Elo difference multiplier ("Fatigue Stretch"). If still level, a <strong>penalty shootout</strong> gives the first-kicking team a 54% edge. Regulation draws are allowed in the group stage.</p>
+
+            <h3>&#x26bd; Golden Boot</h3>
+            <p>200 real players have a <strong>Goals Per Game (GPG)</strong> rating calculated from sportsbook odds. Every time a team scores, a weighted random draw picks the scorer &mdash; stars like <strong>Mbapp&eacute;</strong> (0.86 GPG) are far more likely to bag than squad players. The top 3 get a podium after the simulation.</p>
+
+            <h3>&#x1f3c6; Stats Dashboard</h3>
+            <p>After each simulation you'll see:
+                <strong>Cinderella</strong> (lowest Elo, deepest run),
+                <strong>Fraud Watch</strong> (highest Elo, earliest exit),
+                <strong>Chaos Magnet</strong> (most extra-time matches),
+                <strong>Golden Boot</strong> / <strong>Iron Curtain</strong> / <strong>Sniper</strong> (top goalscorer, best defense, best conversion),
+                plus <strong>xG metrics</strong> and match superlatives.
+            </p>
+
+            <h3>&#x1f1fa;&#x1f1f8; The Donald Trump Annoyance Factor</h3>
+            <p>Tracks how <strong>hostile nations</strong> (Iran, Haiti, Iraq) and <strong>rival nations</strong> (Mexico, Canada) perform relative to their Elo expectations &mdash; balanced against Team USA's own performance. If Iran wins the whole tournament while the USA crashes out, the <strong>Global Spite Rating</strong> goes nuclear. Also flags the most notable USA vs. hostile/rival result.</p>
+
+            <h3>&#x1f4e6; Tin Medal</h3>
+            <p>A dishonorable mention for the <strong>highest-GPG golden boot player who scored zero goals</strong> across the entire tournament. Someone had to be the bust.</p>
+
+            <p class="modal-footer">Built with Elo, Poisson, and questionable geopolitical judgment.</p>
+        </div>
+    </div>
+
+    <main class="main-wrapper">
+        <section class="stage-section">
+            <h2>Step 1: Group Stage (48 Teams)</h2>
+            <div class="groups-grid" id="groups-container"></div>
+        </section>
+
+        <div class="stage-section id-disabled" id="group-tables-container"></div>
+
+        <hr>
+
+        <section class="stage-section id-disabled" id="knockout-section">
+            <h2>Step 2: Knockout Stage Bracket</h2>
+            <div class="tournament-bracket">
+                <div class="round-col"><h3>Round of 32</h3><div class="matches-slots" id="r32-slots"></div></div>
+                <div class="round-col"><h3>Round of 16</h3><div class="matches-slots" id="r16-slots"></div></div>
+                <div class="round-col"><h3>Quarter-Finals</h3><div class="matches-slots" id="qf-slots"></div></div>
+                <div class="round-col"><h3>Semi-Finals</h3><div class="matches-slots" id="sf-slots"></div></div>
+                <div class="round-col"><h3>Final</h3><div class="matches-slots" id="f-slots"></div></div>
+                <div class="round-col">
+                    <h3>Champion</h3>
+                    <div class="champion-box">
+                        <div class="crown">👑</div>
+                        <div id="champion-name">???</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <section class="stage-section id-disabled" id="stats-container"></section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
