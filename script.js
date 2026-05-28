@@ -254,6 +254,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+// Render team name with flag image (reliable across all browsers/platforms)
+function renderTeam(name) {
+    const code = teamFlagCode[name];
+    const cleanName = name.replace(/[\u{1F1E6}-\u{1F1FF}]{2}/u, '').replace(/\u{1F3F4}[\u{E0020}-\u{E007F}]+/u, '').trim();
+    if (code) {
+        return '<img src="https://flagcdn.com/16x12/' + code + '.png" alt="" class="team-flag"> ' + cleanName;
+    }
+    return name;
+}
+
 function renderGroupStage() {
     const container = document.getElementById("groups-container");
     if (!container) return;
@@ -275,13 +285,13 @@ function renderGroupStage() {
             const row = document.createElement("div");
             row.className = "group-match-row";
             row.innerHTML = `
-                <span style="font-size:0.85rem; width:40%; text-align:right;">${match[0]}</span>
+                <span style="font-size:0.85rem; width:40%; text-align:right;">${renderTeam(match[0])}</span>
                 <div class="score-inputs">
                     <input type="number" min="0" class="score-input score-t1" value="0">
                     <span class="match-vs">vs</span>
                     <input type="number" min="0" class="score-input score-t2" value="0">
                 </div>
-                <span style="font-size:0.85rem; width:40%; text-align:left;">${match[1]}</span>
+                <span style="font-size:0.85rem; width:40%; text-align:left;">${renderTeam(match[1])}</span>
             `;
             row.setAttribute("data-t1", match[0]);
             row.setAttribute("data-t2", match[1]);
@@ -355,8 +365,8 @@ function processGroupStage() {
         { id: 3, matchNo: 76, t1: groupResults['C'][1], t2: groupResults['F'][2] },
         { id: 4, matchNo: 77, t1: groupResults['I'][1], t2: get3rd(1) },
         { id: 5, matchNo: 78, t1: groupResults['E'][2], t2: groupResults['I'][2] },
-        { id: 7, matchNo: 80, t1: groupResults['L'][1], t2: get3rd(3) },
         { id: 6, matchNo: 79, t1: groupResults['A'][1], t2: get3rd(2) },
+        { id: 7, matchNo: 80, t1: groupResults['L'][1], t2: get3rd(3) },
         { id: 8, matchNo: 81, t1: groupResults['D'][1], t2: get3rd(4) },
         { id: 9, matchNo: 82, t1: groupResults['G'][1], t2: get3rd(5) },
         { id: 10, matchNo: 83, t1: groupResults['K'][2], t2: groupResults['L'][2] },
@@ -401,7 +411,7 @@ function renderBracket() {
     renderKoRound(knockoutState.f, "f-slots", "f");
 
     const champField = document.getElementById("champion-name");
-    if (champField) champField.innerText = knockoutState.champion ? knockoutState.champion : "???";
+    if (champField) champField.innerHTML = knockoutState.champion ? renderTeam(knockoutState.champion) : "???";
 }
 
 function renderKoRound(matches, containerId, roundKey) {
@@ -433,22 +443,22 @@ function renderKoRound(matches, containerId, roundKey) {
         div1.className = `ko-team ${match.winner === match.t1 && match.t1 ? 'advanced' : ''} ${match.winner && match.winner !== match.t1 ? 'eliminated' : ''}`;
 
         if (!match.t1 || !match.t2) {
-            div1.innerText = name1;
+            div1.innerHTML = renderTeam(name1);
         } else if (match.winner && match.aet) {
-            div1.innerHTML = `<span>${name1}</span><span class="score-input score-display">${displayS1}${suffix1}</span>`;
+            div1.innerHTML = `<span>${renderTeam(name1)}</span><span class="score-input score-display">${displayS1}${suffix1}</span>`;
         } else {
-            div1.innerHTML = `<span>${name1}</span><input type="number" min="0" class="score-input" value="${displayS1}" onchange="advanceTeamScore('${roundKey}', ${match.id}, this.value, 't1')">`;
+            div1.innerHTML = `<span>${renderTeam(name1)}</span><input type="number" min="0" class="score-input" value="${displayS1}" onchange="advanceTeamScore('${roundKey}', ${match.id}, this.value, 't1')">`;
         }
 
         const div2 = document.createElement("div");
         div2.className = `ko-team ${match.winner === match.t2 && match.t2 ? 'advanced' : ''} ${match.winner && match.winner !== match.t2 ? 'eliminated' : ''}`;
 
         if (!match.t1 || !match.t2) {
-            div2.innerText = name2;
+            div2.innerHTML = renderTeam(name2);
         } else if (match.winner && match.aet) {
-            div2.innerHTML = `<span>${name2}</span><span class="score-input score-display">${displayS2}${suffix2}</span>`;
+            div2.innerHTML = `<span>${renderTeam(name2)}</span><span class="score-input score-display">${displayS2}${suffix2}</span>`;
         } else {
-            div2.innerHTML = `<span>${name2}</span><input type="number" min="0" class="score-input" value="${displayS2}" onchange="advanceTeamScore('${roundKey}', ${match.id}, this.value, 't2')">`;
+            div2.innerHTML = `<span>${renderTeam(name2)}</span><input type="number" min="0" class="score-input" value="${displayS2}" onchange="advanceTeamScore('${roundKey}', ${match.id}, this.value, 't2')">`;
         }
 
         matchBox.appendChild(div1);
@@ -559,7 +569,7 @@ function renderGroupTables() {
         savedGroupTables[g].forEach((t, i) => {
             const posClass = i === 0 ? 'pos-1' : i === 1 ? 'pos-2' : '';
             html += `<tr class="${posClass}">
-                <td>${i + 1}</td><td>${t.name}</td>
+                <td>${i + 1}</td><td>${renderTeam(t.name)}</td>
                 <td class="pts-col">${t.points}</td>
                 <td>${t.gf}</td><td>${t.gf - t.gd}</td>
                 <td class="${t.gd > 0 ? 'gd-pos' : t.gd < 0 ? 'gd-neg' : ''}">${t.gd > 0 ? '+' : ''}${t.gd}</td>
@@ -573,7 +583,7 @@ function renderGroupTables() {
     if (savedBestThirdPlaces) {
         html += '<div class="third-place-section"><h3>Best Third-Placed Teams (advancing to R32)</h3><ol class="third-place-list">';
         savedBestThirdPlaces.forEach((t, i) => {
-            html += `<li><span class="tp-team">${t.team}</span> <span class="tp-stats">Group ${t.group} &middot; ${t.points} pts &middot; ${t.gd > 0 ? '+' : ''}${t.gd} GD</span></li>`;
+            html += `<li><span class="tp-team">${renderTeam(t.team)}</span> <span class="tp-stats">Group ${t.group} &middot; ${t.points} pts &middot; ${t.gd > 0 ? '+' : ''}${t.gd} GD</span></li>`;
         });
         html += '</ol></div>';
     }
@@ -997,21 +1007,21 @@ function renderTournamentStats() {
     if (s.cinderella) {
         html += `<div class="stats-card badge-cinderella">
             <h3><span class="stats-emoji">&#x1f984;</span> Cinderella Award</h3>
-            <div class="stats-value">${s.cinderella}</div>
+            <div class="stats-value">${renderTeam(s.cinderella)}</div>
             <div class="stats-detail">Elo ${d[s.cinderella].elo} &mdash; Reached ${d[s.cinderella].stage}</div>
         </div>`;
     }
     if (s.fraudWatch) {
         html += `<div class="stats-card badge-fraud">
             <h3><span class="stats-emoji">&#x1f6a8;</span> Fraud Watch</h3>
-            <div class="stats-value">${s.fraudWatch}</div>
+            <div class="stats-value">${renderTeam(s.fraudWatch)}</div>
             <div class="stats-detail">Elo ${d[s.fraudWatch].elo} &mdash; Eliminated in ${d[s.fraudWatch].stage}</div>
         </div>`;
     }
     if (s.chaosMagnet) {
         html += `<div class="stats-card badge-chaos">
             <h3><span class="stats-emoji">&#x26a1;</span> Chaos Magnet</h3>
-            <div class="stats-value">${s.chaosMagnet}</div>
+            <div class="stats-value">${renderTeam(s.chaosMagnet)}</div>
             <div class="stats-detail">${d[s.chaosMagnet].etMinutes} minutes of extra time played</div>
         </div>`;
     }
@@ -1022,14 +1032,14 @@ function renderTournamentStats() {
     if (s.goldenBoot) {
         html += `<div class="stats-card pillar-golden">
             <h3><span class="stats-emoji">&#x26bd;</span> Golden Boot</h3>
-            <div class="stats-value">${s.goldenBoot}</div>
+            <div class="stats-value">${renderTeam(s.goldenBoot)}</div>
             <div class="stats-detail">${d[s.goldenBoot].gf} goals scored in ${d[s.goldenBoot].mp} matches</div>
         </div>`;
     }
     if (s.ironCurtain) {
         html += `<div class="stats-card pillar-curtain">
             <h3><span class="stats-emoji">&#x1f6e1;&#xfe0f;</span> Iron Curtain</h3>
-            <div class="stats-value">${s.ironCurtain}</div>
+            <div class="stats-value">${renderTeam(s.ironCurtain)}</div>
             <div class="stats-detail">Only ${d[s.ironCurtain].ga} goals conceded in ${d[s.ironCurtain].mp} matches</div>
         </div>`;
     }
@@ -1037,7 +1047,7 @@ function renderTournamentStats() {
         const gd = d[s.sniper].gf - d[s.sniper].ga;
         html += `<div class="stats-card pillar-sniper">
             <h3><span class="stats-emoji">&#x1f3af;</span> Sniper Award</h3>
-            <div class="stats-value">${s.sniper}</div>
+            <div class="stats-value">${renderTeam(s.sniper)}</div>
             <div class="stats-detail">Best goal difference: ${gd > 0 ? '+' : ''}${gd}</div>
         </div>`;
     }
@@ -1048,35 +1058,35 @@ function renderTournamentStats() {
     if (s.sniperOver) {
         html += `<div class="stats-card pillar-sniper">
             <h3><span class="stats-emoji">&#x1f3af;</span> Clinical Overperformance</h3>
-            <div class="stats-value">${s.sniperOver}</div>
+            <div class="stats-value">${renderTeam(s.sniperOver)}</div>
             <div class="stats-detail">Scored ${d[s.sniperOver].gf} goals from ${d[s.sniperOver].xgCreated.toFixed(1)} xG (${s.sniperOverDiff > 0 ? '+' : ''}${s.sniperOverDiff.toFixed(1)})</div>
         </div>`;
     }
     if (s.woodenBoot) {
         html += `<div class="stats-card superlative">
             <h3><span class="stats-emoji">&#x1fab5;</span> Wooden Boot</h3>
-            <div class="stats-value">${s.woodenBoot}</div>
+            <div class="stats-value">${renderTeam(s.woodenBoot)}</div>
             <div class="stats-detail">Created ${d[s.woodenBoot].xgCreated.toFixed(1)} xG but scored only ${d[s.woodenBoot].gf} goals (${s.woodenBootDiff.toFixed(1)})</div>
         </div>`;
     }
     if (s.dominantAttack) {
         html += `<div class="stats-card badge-cinderella">
             <h3><span class="stats-emoji">&#x2694;&#xfe0f;</span> Most Dominant Attack</h3>
-            <div class="stats-value">${s.dominantAttack}</div>
+            <div class="stats-value">${renderTeam(s.dominantAttack)}</div>
             <div class="stats-detail">${s.dominantAttackAvg} xG per match</div>
         </div>`;
     }
     if (s.rigidDefense) {
         html += `<div class="stats-card pillar-curtain">
             <h3><span class="stats-emoji">&#x1f6e1;&#xfe0f;</span> Most Rigid Defense</h3>
-            <div class="stats-value">${s.rigidDefense}</div>
+            <div class="stats-value">${renderTeam(s.rigidDefense)}</div>
             <div class="stats-detail">Only ${s.rigidDefenseAvg} xG allowed per match</div>
         </div>`;
     }
     if (s.smashAndGrab) {
         html += `<div class="stats-card badge-chaos">
             <h3><span class="stats-emoji">&#x1f3b0;</span> Smash &amp; Grab</h3>
-            <div class="stats-value">${s.smashAndGrab.winner} ${s.smashAndGrab.score} ${s.smashAndGrab.loser}</div>
+            <div class="stats-value">${renderTeam(s.smashAndGrab.winner)} ${s.smashAndGrab.score} ${renderTeam(s.smashAndGrab.loser)}</div>
             <div class="stats-detail">Won despite xG deficit of ${s.smashAndGrab.deficit.toFixed(1)} &mdash; ${s.smashAndGrab.round}</div>
         </div>`;
     }
@@ -1090,7 +1100,7 @@ function renderTournamentStats() {
         const usaDelta = s.usaAvgDelta;
         const sign = delta > 0 ? '+' : '';
         const usaSign = usaDelta > 0 ? '+' : '';
-        const peakLabel = s.peakNation ? ` (peaked by ${s.peakNation})` : '';
+        const peakLabel = s.peakNation ? ` (peaked by ${renderTeam(s.peakNation)})` : '';
         let flavorText, labelClass;
         if (delta > 0.15) {
             flavorText = 'Tremendous spite. The hostile nations performed vastly better than the fake news analytics predicted. A very bad look for the security apparatus!';
@@ -1114,7 +1124,7 @@ function renderTournamentStats() {
             const pSign = p.avgDelta > 0 ? '+' : '';
             html += `<div class="stats-card badge-cinderella" style="grid-column: 1 / -1;">
                 <h3><span class="stats-emoji">&#x1f6ab;</span> Persona Non Grata Trophy</h3>
-                <div class="stats-value">${p.nation}</div>
+                <div class="stats-value">${renderTeam(p.nation)}</div>
                 <div class="stats-detail">Highest individual spite rating: ${pSign}${p.avgDelta.toFixed(2)} &mdash; officially the most geopolitically disruptive team of the summer.</div>
             </div>`;
         }
@@ -1125,7 +1135,7 @@ function renderTournamentStats() {
             const hostClass = m.usaLost ? 'badge-fraud' : 'pillar-sniper';
             html += `<div class="stats-card ${hostClass}" style="grid-column: 1 / -1;">
                 <h3>${resultLabel}</h3>
-                <div class="stats-value">&#x1f1fa;&#x1f1f8; USA ${m.usaScore} &minus; ${m.oppScore} ${m.opponent}</div>
+                <div class="stats-value">&#x1f1fa;&#x1f1f8; USA ${m.usaScore} &minus; ${m.oppScore} ${renderTeam(m.opponent)}</div>
                 <div class="stats-detail">${m.round} &mdash; ${m.usaLost ? 'Lost by' : 'Won by'} ${m.margin} goal${m.margin > 1 ? 's' : ''}</div>
             </div>`;
         }
@@ -1137,21 +1147,21 @@ function renderTournamentStats() {
     if (s.highestScoring) {
         html += `<div class="stats-card superlative">
             <h3><span class="stats-emoji">&#x1f525;</span> Highest Scoring Match</h3>
-            <div class="stats-value">${s.highestScoring.t1} ${s.highestScoring.g1} &minus; ${s.highestScoring.g2} ${s.highestScoring.t2}</div>
+            <div class="stats-value">${renderTeam(s.highestScoring.t1)} ${s.highestScoring.g1} &minus; ${s.highestScoring.g2} ${renderTeam(s.highestScoring.t2)}</div>
             <div class="stats-detail">${s.highestScoring.total} total goals &mdash; ${s.highestScoring.round}</div>
         </div>`;
     }
     if (s.biggestBlowout) {
         html += `<div class="stats-card superlative">
             <h3><span class="stats-emoji">&#x1f4a5;</span> Biggest Blowout</h3>
-            <div class="stats-value">${s.biggestBlowout.t1} ${s.biggestBlowout.g1} &minus; ${s.biggestBlowout.g2} ${s.biggestBlowout.t2}</div>
+            <div class="stats-value">${renderTeam(s.biggestBlowout.t1)} ${s.biggestBlowout.g1} &minus; ${s.biggestBlowout.g2} ${renderTeam(s.biggestBlowout.t2)}</div>
             <div class="stats-detail">Won by ${s.biggestBlowout.margin} goals &mdash; ${s.biggestBlowout.round}</div>
         </div>`;
     }
     if (s.marathonMatch) {
         html += `<div class="stats-card superlative">
             <h3><span class="stats-emoji">&#x1f3c3;</span> Marathon Match</h3>
-            <div class="stats-value">${s.marathonMatch.t1} ${s.marathonMatch.g1} &minus; ${s.marathonMatch.g2} ${s.marathonMatch.t2}</div>
+            <div class="stats-value">${renderTeam(s.marathonMatch.t1)} ${s.marathonMatch.g1} &minus; ${s.marathonMatch.g2} ${renderTeam(s.marathonMatch.t2)}</div>
             <div class="stats-detail">Went to penalties &mdash; ${s.marathonMatch.round}</div>
         </div>`;
     }
@@ -1294,8 +1304,8 @@ function buildKnockoutBracket(groupResults, best8ThirdPlaces) {
         { id: 3, matchNo: 76, t1: groupResults['C'][1], t2: groupResults['F'][2] },
         { id: 4, matchNo: 77, t1: groupResults['I'][1], t2: get3rd(1) },
         { id: 5, matchNo: 78, t1: groupResults['E'][2], t2: groupResults['I'][2] },
-        { id: 7, matchNo: 80, t1: groupResults['L'][1], t2: get3rd(3) },
         { id: 6, matchNo: 79, t1: groupResults['A'][1], t2: get3rd(2) },
+        { id: 7, matchNo: 80, t1: groupResults['L'][1], t2: get3rd(3) },
         { id: 8, matchNo: 81, t1: groupResults['D'][1], t2: get3rd(4) },
         { id: 9, matchNo: 82, t1: groupResults['G'][1], t2: get3rd(5) },
         { id: 10, matchNo: 83, t1: groupResults['K'][2], t2: groupResults['L'][2] },
@@ -1529,7 +1539,7 @@ function displayMultiSimResults(teamResults, goldenBootWins, numSims) {
         const qfPctClass = entry.qfPct >= 40 ? 'pct-high' : entry.qfPct >= 20 ? 'pct-mid' : '';
         teamHtml += '<tr>' +
             '<td class="rank-col">' + (idx + 1) + '</td>' +
-            '<td>' + entry.team + '</td>' +
+            '<td>' + renderTeam(entry.team) + '</td>' +
             '<td>' + entry.rank + '</td>' +
             '<td>' + entry.group + '</td>' +
             '<td class="' + winPctClass + '">' + entry.winPct.toFixed(1) + '%</td>' +
@@ -1555,7 +1565,7 @@ function displayMultiSimResults(teamResults, goldenBootWins, numSims) {
         gbHtml += '<tr>' +
             '<td class="rank-col">' + (idx + 1) + '</td>' +
             '<td>' + entry.player + '</td>' +
-            '<td>' + entry.team + '</td>' +
+            '<td>' + renderTeam(entry.team) + '</td>' +
             '<td class="' + goalClass + '">' + entry.wins + '</td>' +
             '<td>' + winRate.toFixed(1) + '%</td>' +
             '</tr>';

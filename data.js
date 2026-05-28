@@ -301,6 +301,22 @@ const goldenBootRaw = [
     ["Lyle Foster", "South Africa", 0.20, 7.70, 0.40, 0.10]
 ];
 
+// Map team names to ISO country codes for flag images
+const teamFlagCode = {
+    "🇲🇽 Mexico": "mx", "🇿🇦 South Africa": "za", "🇰🇷 South Korea": "kr", "🇨🇿 Czechia": "cz",
+    "🇨🇦 Canada": "ca", "🇧🇦 Bosnia and Herzegovina": "ba", "🇶🇦 Qatar": "qa", "🇨🇭 Switzerland": "ch",
+    "🇧🇷 Brazil": "br", "🇲🇦 Morocco": "ma", "🇭🇹 Haiti": "ht", "🏴󠁧󠁢󠁳󠁣󠁴󠁿 Scotland": "gb-sct",
+    "🇺🇸 United States": "us", "🇵🇾 Paraguay": "py", "🇦🇺 Australia": "au", "🇹🇷 Turkey": "tr",
+    "🇩🇪 Germany": "de", "🇨🇼 Curaçao": "cw", "🇨🇮 Ivory Coast": "ci", "🇪🇨 Ecuador": "ec",
+    "🇳🇱 Netherlands": "nl", "🇯🇵 Japan": "jp", "🇸🇪 Sweden": "se", "🇹🇳 Tunisia": "tn",
+    "🇧🇪 Belgium": "be", "🇪🇬 Egypt": "eg", "🇮🇷 Iran": "ir", "🇳🇿 New Zealand": "nz",
+    "🇪🇸 Spain": "es", "🇨🇻 Cape Verde": "cv", "🇸🇦 Saudi Arabia": "sa", "🇺🇾 Uruguay": "uy",
+    "🇫🇷 France": "fr", "🇸🇳 Senegal": "sn", "🇮🇶 Iraq": "iq", "🇳🇴 Norway": "no",
+    "🇦🇷 Argentina": "ar", "🇩🇿 Algeria": "dz", "🇦🇹 Austria": "at", "🇯🇴 Jordan": "jo",
+    "🇵🇹 Portugal": "pt", "🇨🇴 Colombia": "co", "🇺🇿 Uzbekistan": "uz", "🇨🇩 DR Congo": "cd",
+    "🏴󠁧󠁢󠁥󠁮󠁧󠁿 England": "gb-eng", "🇭🇷 Croatia": "hr", "🇬🇭 Ghana": "gh", "🇵🇦 Panama": "pa"
+};
+
 // Compute Goals Per Game (GPG) from raw percentages
 const goldenBootPlayers = goldenBootRaw.map((row, idx) => {
     const [player, country, gbPct, winGroupPct, reachFinalPct, toWinPct] = row;

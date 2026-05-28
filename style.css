@@ -685,3 +685,11 @@ hr {
     color: #ffd700;
     font-weight: bold;
 }
+
+.team-flag {
+    width: 16px;
+    height: 12px;
+    vertical-align: middle;
+    display: inline-block;
+    margin-right: 4px;
+}
