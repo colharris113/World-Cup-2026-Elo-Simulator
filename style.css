@@ -41,7 +41,7 @@ header h1 {
     margin-top: 15px;
 }
 
-#reset-btn, #generate-ko-btn, #ai-sim-btn {
+#reset-btn, #generate-ko-btn, #ai-sim-btn, #multi-sim-btn {
     color: white;
     border: none;
     padding: 12px 24px;
@@ -600,3 +600,88 @@ hr {
     transition: 0.2s;
 }
 #how-it-works-btn:hover { background-color: #475569; }
+
+#multi-sim-btn {
+    background-color: #e67e22;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+#multi-sim-btn:hover { background-color: #d35400; }
+
+#multi-sim-progress {
+    text-align: center;
+    color: var(--accent-color);
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-top: 12px;
+    padding: 10px;
+    background: var(--card-bg);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.multi-sim-table {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 24px;
+    overflow-x: auto;
+}
+.multi-sim-table h3 {
+    color: var(--winner-color);
+    text-align: center;
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+}
+.multi-sim-table table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+.multi-sim-table th {
+    color: #94a3b8;
+    padding: 8px 10px;
+    text-align: center;
+    border-bottom: 2px solid var(--border-color);
+    font-weight: 600;
+    white-space: nowrap;
+}
+.multi-sim-table td {
+    padding: 6px 10px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.multi-sim-table td:nth-child(2) {
+    text-align: left;
+}
+.multi-sim-table tr:hover td {
+    background: rgba(72, 202, 228, 0.05);
+}
+.multi-sim-table .rank-col {
+    color: #64748b;
+    font-weight: bold;
+}
+.multi-sim-table .pct-high {
+    color: #2ecc71;
+    font-weight: bold;
+}
+.multi-sim-table .pct-mid {
+    color: var(--winner-color);
+    font-weight: bold;
+}
+.multi-sim-table .pct-low {
+    color: #e74c3c;
+}
+.multi-sim-table .gold-high {
+    color: #ffd700;
+    font-weight: bold;
+}

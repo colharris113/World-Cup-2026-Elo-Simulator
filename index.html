@@ -15,8 +15,10 @@
         <div class="button-group">
             <button id="reset-btn">Reset Simulation</button>
             <button id="ai-sim-btn">🤖 AI Auto-Simulation (Elo)</button>
+            <button id="multi-sim-btn">🏃 Multi-Tournament Simulation</button>
             <button id="how-it-works-btn">&#x2753; How It Works</button>
         </div>
+        <div id="multi-sim-progress" style="display:none;"></div>
     </header>
 
     <!-- How It Works Modal -->
@@ -87,8 +89,15 @@
         <hr>
 
         <section class="stage-section id-disabled" id="stats-container"></section>
+
+        <section id="multi-sim-container" style="display:none;">
+            <h2 style="text-align:center; color:#94a3b8; text-transform:uppercase; letter-spacing:1px; margin-bottom:20px;">Multi-Tournament Results</h2>
+            <div id="multi-sim-team-table"></div>
+            <div id="multi-sim-golden-boot-table"></div>
+        </section>
     </main>
 
+    <script src="data.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

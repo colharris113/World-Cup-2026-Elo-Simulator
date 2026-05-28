@@ -1,75 +1,3 @@
-// Official FIFA World Cup 2026 Groups
-const groupsData = {
-    A: ["🇲🇽 Mexico", "🇿🇦 South Africa", "🇰🇷 South Korea", "🇨🇿 Czechia"],
-    B: ["🇨🇦 Canada", "🇧🇦 Bosnia and Herzegovina", "🇶🇦 Qatar", "🇨🇭 Switzerland"],
-    C: ["🇧🇷 Brazil", "🇲🇦 Morocco", "🇭🇹 Haiti", "🏴󠁧󠁢󠁳󠁣󠁴󠁿 Scotland"],
-    D: ["🇺🇸 United States", "🇵🇾 Paraguay", "🇦🇺 Australia", "🇹🇷 Turkey"],
-    E: ["🇩🇪 Germany", "🇨🇼 Curaçao", "🇨🇮 Ivory Coast", "🇪🇨 Ecuador"],
-    F: ["🇳🇱 Netherlands", "🇯🇵 Japan", "🇸🇪 Sweden", "🇹🇳 Tunisia"],
-    G: ["🇧🇪 Belgium", "🇪🇬 Egypt", "🇮🇷 Iran", "🇳🇿 New Zealand"],
-    H: ["🇪🇸 Spain", "🇨🇻 Cape Verde", "🇸🇦 Saudi Arabia", "🇺🇾 Uruguay"],
-    I: ["🇫🇷 France", "🇸🇳 Senegal", "🇮🇶 Iraq", "🇳🇴 Norway"],
-    J: ["🇦🇷 Argentina", "🇩🇿 Algeria", "🇦🇹 Austria", "🇯🇴 Jordan"],
-    K: ["🇵🇹 Portugal", "🇨🇴 Colombia", "🇺🇿 Uzbekistan", "🇨🇩 DR Congo"],
-    L: ["🏴󠁧󠁢󠁥󠁮󠁧󠁿 England", "🇭🇷 Croatia", "🇬🇭 Ghana", "🇵🇦 Panama"]
-};
-
-// Elo ratings derived from World.tsv (column 4)
-const teamEloRatings = {
-    "🇲🇽 Mexico": 1860,
-    "🇿🇦 South Africa": 1524,
-    "🇰🇷 South Korea": 1752,
-    "🇨🇿 Czechia": 1726,
-    "🇨🇦 Canada": 1784,
-    "🇧🇦 Bosnia and Herzegovina": 1594,
-    "🇶🇦 Qatar": 1425,
-    "🇨🇭 Switzerland": 1889,
-    "🇧🇷 Brazil": 1984,
-    "🇲🇦 Morocco": 1822,
-    "🇭🇹 Haiti": 1532,
-    "🏴󠁧󠁢󠁳󠁣󠁴󠁿 Scotland": 1767,
-    "🇺🇸 United States": 1721,
-    "🇵🇾 Paraguay": 1833,
-    "🇦🇺 Australia": 1783,
-    "🇹🇷 Turkey": 1902,
-    "🇩🇪 Germany": 1923,
-    "🇨🇼 Curaçao": 1436,
-    "🇨🇮 Ivory Coast": 1676,
-    "🇪🇨 Ecuador": 1933,
-    "🇳🇱 Netherlands": 1961,
-    "🇯🇵 Japan": 1904,
-    "🇸🇪 Sweden": 1719,
-    "🇹🇳 Tunisia": 1636,
-    "🇧🇪 Belgium": 1867,
-    "🇪🇬 Egypt": 1689,
-    "🇮🇷 Iran": 1760,
-    "🇳🇿 New Zealand": 1585,
-    "🇪🇸 Spain": 2165,
-    "🇨🇻 Cape Verde": 1549,
-    "🇸🇦 Saudi Arabia": 1568,
-    "🇺🇾 Uruguay": 1892,
-    "🇫🇷 France": 2081,
-    "🇸🇳 Senegal": 1878,
-    "🇮🇶 Iraq": 1607,
-    "🇳🇴 Norway": 1912,
-    "🇦🇷 Argentina": 2113,
-    "🇩🇿 Algeria": 1743,
-    "🇦🇹 Austria": 1827,
-    "🇯🇴 Jordan": 1690,
-    "🇵🇹 Portugal": 1984,
-    "🇨🇴 Colombia": 1975,
-    "🇺🇿 Uzbekistan": 1727,
-    "🇨🇩 DR Congo": 1655,
-    "🏴󠁧󠁢󠁥󠁮󠁧󠁿 England": 2020,
-    "🇭🇷 Croatia": 1930,
-    "🇬🇭 Ghana": 1503,
-    "🇵🇦 Panama": 1737
-};
-
-// Home advantage: +175 Elo points for host nations (USA, Mexico, Canada)
-const HOME_ADVANTAGE = 175;
-const HOST_NATIONS = ["🇺🇸 United States", "🇲🇽 Mexico", "🇨🇦 Canada"];
-
 // Get effective Elo ratings for a match pair, handling host-vs-host correctly.
 // When two hosts meet, only one gets the home bonus (randomly assigned).
 // For QF/SF/Final rounds, only USA keeps the home advantage (Mexico/Canada do not host these rounds).
@@ -105,204 +33,6 @@ function getMatchElos(team1, team2, round) {
 function calculateEloProbability(rating1, rating2) {
     return 1 / (1 + Math.pow(10, (rating2 - rating1) / 600));
 }
-
-// Hostile/rival nations for Geopolitical Hostility Index
-const HOSTILE_NATIONS = ["🇮🇷 Iran", "🇭🇹 Haiti", "🇮🇶 Iraq"];
-const RIVAL_NATIONS = ["🇲🇽 Mexico", "🇨🇦 Canada"];
-
-// ===== Golden Boot Player Data (from golden boot.tsv) =====
-// Maps TSV country names to JS team names (with flag emojis)
-const countryToTeamName = {
-    "France": "🇫🇷 France",
-    "England": "🏴󠁧󠁢󠁥󠁮󠁧󠁿 England",
-    "Argentina": "🇦🇷 Argentina",
-    "Norway": "🇳🇴 Norway",
-    "Spain": "🇪🇸 Spain",
-    "Portugal": "🇵🇹 Portugal",
-    "Brazil": "🇧🇷 Brazil",
-    "Belgium": "🇧🇪 Belgium",
-    "Germany": "🇩🇪 Germany",
-    "Netherlands": "🇳🇱 Netherlands",
-    "Colombia": "🇨🇴 Colombia",
-    "Egypt": "🇪🇬 Egypt",
-    "Sweden": "🇸🇪 Sweden",
-    "Ecuador": "🇪🇨 Ecuador",
-    "Mexico": "🇲🇽 Mexico",
-    "Uruguay": "🇺🇾 Uruguay",
-    "USA": "🇺🇸 United States",
-    "Senegal": "🇸🇳 Senegal",
-    "Croatia": "🇭🇷 Croatia",
-    "Austria": "🇦🇹 Austria",
-    "Turkey": "🇹🇷 Turkey",
-    "Ghana": "🇬🇭 Ghana",
-    "Canada": "🇨🇦 Canada",
-    "Scotland": "🏴󠁧󠁢󠁳󠁣󠁴󠁿 Scotland",
-    "Switzerland": "🇨🇭 Switzerland",
-    "Morocco": "🇲🇦 Morocco",
-    "South Korea": "🇰🇷 South Korea",
-    "Japan": "🇯🇵 Japan",
-    "Algeria": "🇩🇿 Algeria",
-    "Ivory Coast": "🇨🇮 Ivory Coast",
-    "DR Congo": "🇨🇩 DR Congo",
-    "New Zealand": "🇳🇿 New Zealand",
-    "South Africa": "🇿🇦 South Africa",
-    "Paraguay": "🇵🇾 Paraguay",
-    "Bosnia": "🇧🇦 Bosnia and Herzegovina",
-    "Saudi Arabia": "🇸🇦 Saudi Arabia",
-    "Cape Verde": "🇨🇻 Cape Verde",
-    "Czechia": "🇨🇿 Czechia",
-    "Tunisia": "🇹🇳 Tunisia"
-};
-
-// Raw golden boot data: [player, country, gbImplied%, winGroup%, reachFinal%, toWin%]
-const goldenBootRaw = [
-    ["Kylian Mbappe", "France", 14.30, 69.70, 25.00, 16.70],
-    ["Harry Kane", "England", 12.50, 76.20, 25.00, 13.30],
-    ["Lionel Messi", "Argentina", 7.70, 77.30, 19.00, 10.00],
-    ["Erling Haaland", "Norway", 6.70, 26.70, 7.70, 3.20],
-    ["Lamine Yamal", "Spain", 5.30, 81.80, 31.30, 17.40],
-    ["Mikel Oyarzabal", "Spain", 5.30, 81.80, 31.30, 17.40],
-    ["Cristiano Ronaldo", "Portugal", 4.80, 69.70, 16.70, 9.10],
-    ["Vinicius Junior", "Brazil", 4.30, 78.70, 20.00, 11.10],
-    ["Lautaro Martinez", "Argentina", 3.80, 77.30, 19.00, 10.00],
-    ["Ousmane Dembele", "France", 3.40, 69.70, 25.00, 16.70],
-    ["Romelu Lukaku", "Belgium", 3.20, 69.70, 7.70, 2.80],
-    ["Raphinha", "Brazil", 3.20, 78.70, 20.00, 11.10],
-    ["Nick Woltemade", "Germany", 2.80, 75.60, 15.40, 6.70],
-    ["Julian Alvarez", "Argentina", 2.80, 77.30, 19.00, 10.00],
-    ["Alvaro Morata", "Spain", 2.80, 81.80, 31.30, 17.40],
-    ["Richarlison", "Brazil", 2.80, 78.70, 20.00, 11.10],
-    ["Joao Pedro", "Brazil", 2.80, 78.70, 20.00, 11.10],
-    ["Cody Gakpo", "Netherlands", 2.40, 56.50, 10.00, 4.80],
-    ["Bukayo Saka", "England", 2.40, 76.20, 25.00, 13.30],
-    ["Memphis Depay", "Netherlands", 2.40, 56.50, 10.00, 4.80],
-    ["Ferran Torres", "Spain", 2.40, 81.80, 31.30, 17.40],
-    ["Mikel Merino", "Spain", 2.40, 81.80, 31.30, 17.40],
-    ["Igor Thiago", "Belgium", 2.40, 69.70, 7.70, 2.80],
-    ["Jean-Philippe Mateta", "France", 2.00, 69.70, 25.00, 16.70],
-    ["Jude Bellingham", "England", 2.00, 76.20, 25.00, 13.30],
-    ["Goncalo Ramos", "Portugal", 2.00, 69.70, 16.70, 9.10],
-    ["Florian Wirtz", "Germany", 2.00, 75.60, 15.40, 6.70],
-    ["Marcus Thuram", "France", 2.00, 69.70, 25.00, 16.70],
-    ["Neymar", "Brazil", 2.00, 78.70, 20.00, 11.10],
-    ["Bruno Fernandes", "Portugal", 2.00, 69.70, 16.70, 9.10],
-    ["Luis Diaz", "Colombia", 2.00, 29.40, 5.30, 2.40],
-    ["Desire Doue", "France", 2.00, 69.70, 25.00, 16.70],
-    ["Mohamed Salah", "Egypt", 2.00, 20.00, 1.20, 0.30],
-    ["Kai Havertz", "Germany", 2.00, 75.60, 15.40, 6.70],
-    ["Dani Olmo", "Spain", 2.00, 81.80, 31.30, 17.40],
-    ["Deniz Undav", "Germany", 2.00, 75.60, 15.40, 6.70],
-    ["Viktor Gyokeres", "Sweden", 2.00, 18.20, 2.00, 1.00],
-    ["Enner Valencia", "Ecuador", 1.50, 22.20, 2.80, 1.20],
-    ["Donyell Malen", "Netherlands", 1.50, 56.50, 10.00, 4.80],
-    ["Morgan Rogers", "England", 1.50, 76.20, 25.00, 13.30],
-    ["Santiago Gimenez", "Mexico", 1.50, 52.40, 3.80, 1.20],
-    ["Darwin Nunez", "Uruguay", 1.50, 21.30, 4.80, 2.00],
-    ["Eberechi Eze", "England", 1.50, 76.20, 25.00, 13.30],
-    ["Lois Openda", "Belgium", 1.50, 69.70, 7.70, 2.80],
-    ["Jamal Musiala", "Germany", 1.50, 75.60, 15.40, 6.70],
-    ["Leandro Trossard", "Belgium", 1.50, 69.70, 7.70, 2.80],
-    ["Marcus Rashford", "England", 1.50, 76.20, 25.00, 13.30],
-    ["Matheus Cunha", "Brazil", 1.50, 78.70, 20.00, 11.10],
-    ["Alexander Sorloth", "Norway", 1.50, 26.70, 7.70, 3.20],
-    ["Alexander Isak", "Sweden", 1.50, 18.20, 2.00, 1.00],
-    ["Folarin Balogun", "USA", 1.20, 44.40, 5.30, 1.60],
-    ["Kevin De Bruyne", "Belgium", 1.20, 69.70, 7.70, 2.80],
-    ["Christian Pulisic", "USA", 1.20, 44.40, 5.30, 1.60],
-    ["Anthony Gordon", "England", 1.20, 76.20, 25.00, 13.30],
-    ["Rafael Leao", "Portugal", 1.20, 69.70, 16.70, 9.10],
-    ["Jeremy Doku", "Belgium", 1.20, 69.70, 7.70, 2.80],
-    ["Sadio Mane", "Senegal", 1.20, 11.80, 2.40, 1.10],
-    ["Leroy Sane", "Germany", 1.20, 75.60, 15.40, 6.70],
-    ["Jhon Duran", "Colombia", 1.20, 29.40, 5.30, 2.40],
-    ["Raul Jimenez", "Mexico", 1.20, 52.40, 3.80, 1.20],
-    ["Ante Budimir", "Croatia", 1.20, 22.20, 3.40, 1.20],
-    ["Brian Brobbey", "Netherlands", 1.20, 56.50, 10.00, 4.80],
-    ["Christoph Baumgartner", "Austria", 1.20, 18.20, 2.40, 0.70],
-    ["Ollie Watkins", "England", 1.20, 76.20, 25.00, 13.30],
-    ["Omar Marmoush", "Egypt", 1.00, 20.00, 1.20, 0.30],
-    ["Arda Guler", "Turkey", 1.00, 33.30, 3.80, 1.00],
-    ["Mohammed Kudus", "Ghana", 1.00, 9.10, 1.20, 0.30],
-    ["Nicolas Jackson", "Senegal", 1.00, 11.80, 2.40, 1.10],
-    ["Jonathan David", "Canada", 1.00, 33.30, 2.40, 0.50],
-    ["Kenan Yildiz", "Turkey", 1.00, 33.30, 3.80, 1.00],
-    ["Pedro Neto", "Portugal", 1.00, 69.70, 16.70, 9.10],
-    ["Haji Wright", "USA", 1.00, 44.40, 5.30, 1.60],
-    ["Nico Williams", "Spain", 1.00, 81.80, 31.30, 17.40],
-    ["Ricardo Pepi", "USA", 1.00, 44.40, 5.30, 1.60],
-    ["Scott McTominay", "Scotland", 1.00, 9.10, 1.20, 0.50],
-    ["Bradley Barcola", "France", 1.00, 69.70, 25.00, 16.70],
-    ["Casemiro", "Brazil", 1.00, 78.70, 20.00, 11.10],
-    ["Charles De Ketelaere", "Belgium", 1.00, 69.70, 7.70, 2.80],
-    ["Gabriel Martinelli", "Brazil", 1.00, 78.70, 20.00, 11.10],
-    ["Rayan Cherki", "France", 1.00, 69.70, 25.00, 16.70],
-    ["Breel Embolo", "Switzerland", 0.80, 55.60, 5.30, 1.50],
-    ["Ismaila Sarr", "Senegal", 0.70, 11.80, 2.40, 1.10],
-    ["Hamza Igamane", "Morocco", 0.70, 21.30, 4.30, 2.00],
-    ["Noa Lang", "Netherlands", 0.70, 56.50, 10.00, 4.80],
-    ["Hirving Lozano", "Mexico", 0.70, 52.40, 3.80, 1.20],
-    ["Lee Kang-In", "South Korea", 0.70, 25.00, 1.50, 0.20],
-    ["Enzo Fernandez", "Argentina", 0.70, 77.30, 19.00, 10.00],
-    ["Jorgen Strand Larsen", "Norway", 0.70, 26.70, 7.70, 3.20],
-    ["Riyad Mahrez", "Algeria", 0.70, 12.50, 1.50, 0.30],
-    ["James Rodriguez", "Colombia", 0.70, 29.40, 5.30, 2.40],
-    ["Brahim Diaz", "Morocco", 0.70, 21.30, 4.30, 2.00],
-    ["Andrej Kramaric", "Croatia", 0.70, 22.20, 3.40, 1.20],
-    ["Jhon Arias", "Colombia", 0.70, 29.40, 5.30, 2.40],
-    ["Ange-Yoan Bonny", "Ivory Coast", 0.70, 14.30, 1.20, 0.40],
-    ["Ivan Toney", "England", 0.70, 76.20, 25.00, 13.30],
-    ["Julian Quinones", "Mexico", 0.70, 52.40, 3.80, 1.20],
-    ["Pedri", "Spain", 0.50, 81.80, 31.30, 17.40],
-    ["Che Adams", "Scotland", 0.50, 9.10, 1.20, 0.50],
-    ["Chris Wood", "New Zealand", 0.50, 3.80, 0.30, 0.10],
-    ["Oscar Bobb", "Norway", 0.50, 26.70, 7.70, 3.20],
-    ["Cyle Larin", "Canada", 0.50, 33.30, 2.40, 0.50],
-    ["Martin Odegaard", "Norway", 0.50, 26.70, 7.70, 3.20],
-    ["Daizen Maeda", "Japan", 0.50, 27.80, 3.80, 1.50],
-    ["Amad Diallo", "Ivory Coast", 0.50, 14.30, 1.20, 0.40],
-    ["Denzel Dumfries", "Netherlands", 0.50, 56.50, 10.00, 4.80],
-    ["Ermedin Demirovic", "Bosnia", 0.50, 19.00, 1.20, 0.20],
-    ["Lawrence Shankland", "Scotland", 0.50, 9.10, 1.20, 0.50],
-    ["Lucas Paqueta", "Brazil", 0.50, 78.70, 20.00, 11.10],
-    ["Nicolas Pepe", "Ivory Coast", 0.50, 14.30, 1.20, 0.40],
-    ["Noah Okafor", "Switzerland", 0.50, 55.60, 5.30, 1.50],
-    ["Zeki Amdouni", "Switzerland", 0.50, 55.60, 5.30, 1.50],
-    ["Giovanni Reyna", "USA", 0.40, 44.40, 5.30, 1.60],
-    ["Julio Enciso", "Paraguay", 0.40, 20.00, 1.50, 0.30],
-    ["Achraf Hakimi", "Morocco", 0.40, 21.30, 4.30, 2.00],
-    ["Anthony Elanga", "Sweden", 0.40, 18.20, 2.00, 1.00],
-    ["Cedric Bakambu", "DR Congo", 0.40, 8.30, 0.70, 0.10],
-    ["Dan Ndoye", "Switzerland", 0.40, 55.60, 5.30, 1.50],
-    ["Marcel Sabitzer", "Austria", 0.40, 18.20, 2.40, 0.70],
-    ["Yoane Wissa", "DR Congo", 0.40, 8.30, 0.70, 0.10],
-    ["Brenden Aaronson", "USA", 0.20, 44.40, 5.30, 1.60],
-    ["John McGinn", "Scotland", 0.20, 9.10, 1.20, 0.50],
-    ["Lyle Foster", "South Africa", 0.20, 7.70, 0.40, 0.10]
-];
-
-// Compute Goals Per Game (GPG) from raw percentages
-// Formula: expectedMatches = 3.0 + 1.5*(winGroup%) + 1.5*(reachFinal%) + 1.0*(toWin%)
-//          gpg = (gbImplied% / 100) / expectedMatches * 27.5
-const goldenBootPlayers = goldenBootRaw.map((row, idx) => {
-    const [player, country, gbPct, winGroupPct, reachFinalPct, toWinPct] = row;
-    const gbDec = gbPct / 100;
-    const winGroupDec = winGroupPct / 100;
-    const reachFinalDec = reachFinalPct / 100;
-    const toWinDec = toWinPct / 100;
-
-    const expectedMatches = 3.0 + 1.5 * winGroupDec + 1.5 * reachFinalDec + 1.0 * toWinDec;
-    const gpg = (gbDec / expectedMatches) * 27.5;
-
-    return {
-        rank: idx + 1,
-        player,
-        country,
-        team: countryToTeamName[country] || null,
-        gbImplied: gbDec,
-        expectedMatches: Math.round(expectedMatches * 100) / 100,
-        gpg: Math.round(gpg * 100) / 100
-    };
-});
 
 // ===== Goal Scorer Selection =====
 // Get tracked golden boot players for a given team (by JS team name)
@@ -498,6 +228,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const aiBtn = document.getElementById("ai-sim-btn");
     if (aiBtn) aiBtn.addEventListener("click", runFullAISimulation);
+
+    const multiBtn = document.getElementById("multi-sim-btn");
+    if (multiBtn) {
+        multiBtn.addEventListener("click", () => {
+            const input = prompt("How many simulations to run?", "500");
+            const n = parseInt(input);
+            if (n && n > 0) {
+                runMultiSimulation(n);
+            }
+        });
+    }
 
     // How It Works modal
     const howBtn = document.getElementById("how-it-works-btn");
@@ -844,25 +585,19 @@ function renderGroupTables() {
    Tournament Stats Dashboard
    ===================================================================== */
 
-const STAGE_SCORE = {
-    "Group Stage": 0, "Round of 32": 1, "Round of 16": 2,
-    "Quarter-Finals": 3, "Semi-Finals": 4, "Final": 5, "Champion": 6
-};
-
-function initTournamentStats() {
-    tournamentStats = {
-        teams: {},
-        matches: [],
-        highestScoring: null,
-        biggestBlowout: null,
-        marathonMatch: null,
-        biggestSmashAndGrab: { deficit: 0 },
-        hostility: { teamDeltas: {} }
-    };
+function initTournamentStats(stats) {
+    const target = stats || tournamentStats || {};
+    target.teams = {};
+    target.matches = [];
+    target.highestScoring = null;
+    target.biggestBlowout = null;
+    target.marathonMatch = null;
+    target.biggestSmashAndGrab = { deficit: 0 };
+    target.hostility = { teamDeltas: {} };
     // Initialize all 48 teams
     Object.values(groupsData).forEach(group => {
         group.forEach(team => {
-            tournamentStats.teams[team] = {
+            target.teams[team] = {
                 gf: 0, ga: 0, mp: 0, w: 0, d: 0, l: 0,
                 elo: teamEloRatings[team] || 1500,
                 etMinutes: 0, pensWon: 0, pensLost: 0,
@@ -870,14 +605,17 @@ function initTournamentStats() {
             };
         });
     });
-    // Initialize hostility trackers for hostile + rival nations + USA (for comparison)
+    // Initialize hostility trackers for hostile + rival nations + USA
     [...HOSTILE_NATIONS, ...RIVAL_NATIONS, "🇺🇸 United States"].forEach(nation => {
-        tournamentStats.hostility.teamDeltas[nation] = { totalDelta: 0, matchCount: 0 };
+        target.hostility.teamDeltas[nation] = { totalDelta: 0, matchCount: 0 };
     });
+    if (!stats) tournamentStats = target;
+    return target;
 }
 
-function collectGroupMatchData(t1, t2, g1, g2, xg1, xg2, eloProb, scorers1, scorers2) {
-    const d = tournamentStats.teams;
+function collectGroupMatchData(t1, t2, g1, g2, xg1, xg2, eloProb, scorers1, scorers2, stats) {
+    const s = stats || tournamentStats;
+    const d = s.teams;
     d[t1].gf += g1; d[t1].ga += g2; d[t1].mp += 1;
     d[t2].gf += g2; d[t2].ga += g1; d[t2].mp += 1;
     if (g1 > g2) { d[t1].w++; d[t2].l++; }
@@ -889,7 +627,7 @@ function collectGroupMatchData(t1, t2, g1, g2, xg1, xg2, eloProb, scorers1, scor
     d[t2].xgCreated += xg2; d[t2].xgConceded += xg1;
 
     // Track geopolitical hostility deltas
-    const h = tournamentStats.hostility.teamDeltas;
+    const h = s.hostility.teamDeltas;
     const t1Outcome = g1 > g2 ? 1.0 : g1 === g2 ? 0.5 : 0.0;
     const t2Outcome = g2 > g1 ? 1.0 : g2 === g1 ? 0.5 : 0.0;
     const t1Prob = eloProb;
@@ -900,33 +638,34 @@ function collectGroupMatchData(t1, t2, g1, g2, xg1, xg2, eloProb, scorers1, scor
     const total = g1 + g2;
     const margin = Math.abs(g1 - g2);
     const record = { t1, t2, g1, g2, round: "Group Stage", scorers1, scorers2 };
-    tournamentStats.matches.push(record);
+    s.matches.push(record);
 
-    if (!tournamentStats.highestScoring || total > tournamentStats.highestScoring.total)
-        tournamentStats.highestScoring = { total, ...record };
-    if (!tournamentStats.biggestBlowout || margin > tournamentStats.biggestBlowout.margin)
-        tournamentStats.biggestBlowout = { margin, ...record };
+    if (!s.highestScoring || total > s.highestScoring.total)
+        s.highestScoring = { total, ...record };
+    if (!s.biggestBlowout || margin > s.biggestBlowout.margin)
+        s.biggestBlowout = { margin, ...record };
 
     // Check for Smash & Grab (winner had lower xG)
     if (g1 > g2 && xg1 < xg2) {
         const deficit = xg2 - xg1;
-        if (deficit > tournamentStats.biggestSmashAndGrab.deficit) {
-            tournamentStats.biggestSmashAndGrab = { winner: t1, loser: t2, score: `${g1}-${g2}`, deficit, xg1, xg2, round: "Group Stage" };
+        if (deficit > s.biggestSmashAndGrab.deficit) {
+            s.biggestSmashAndGrab = { winner: t1, loser: t2, score: `${g1}-${g2}`, deficit, xg1, xg2, round: "Group Stage" };
         }
     } else if (g2 > g1 && xg2 < xg1) {
         const deficit = xg1 - xg2;
-        if (deficit > tournamentStats.biggestSmashAndGrab.deficit) {
-            tournamentStats.biggestSmashAndGrab = { winner: t2, loser: t1, score: `${g2}-${g1}`, deficit, xg1, xg2, round: "Group Stage" };
+        if (deficit > s.biggestSmashAndGrab.deficit) {
+            s.biggestSmashAndGrab = { winner: t2, loser: t1, score: `${g2}-${g1}`, deficit, xg1, xg2, round: "Group Stage" };
         }
     }
 }
 
-function collectKOMatchData(roundKey, match, result) {
+function collectKOMatchData(roundKey, match, result, stats) {
+    const s = stats || tournamentStats;
     const t1 = match.t1, t2 = match.t2;
     const g1 = parseInt(result.s1) + (result.aet ? result.aet_s1 : 0);
     const g2 = parseInt(result.s2) + (result.aet ? result.aet_s2 : 0);
 
-    const d = tournamentStats.teams;
+    const d = s.teams;
     d[t1].gf += g1; d[t1].ga += g2; d[t1].mp += 1;
     d[t2].gf += g2; d[t2].ga += g1; d[t2].mp += 1;
     if (g1 > g2) { d[t1].w++; d[t2].l++; }
@@ -940,7 +679,7 @@ function collectKOMatchData(roundKey, match, result) {
 
     // Track geopolitical hostility deltas (using 90-min eloProb)
     const eloProb = result.eloProb || 0.5;
-    const h = tournamentStats.hostility.teamDeltas;
+    const h = s.hostility.teamDeltas;
     const t1Outcome = g1 > g2 ? 1.0 : g1 === g2 ? 0.5 : 0.0;
     const t2Outcome = g2 > g1 ? 1.0 : g2 === g1 ? 0.5 : 0.0;
     if (h[t1] !== undefined) { h[t1].totalDelta += t1Outcome - eloProb; h[t1].matchCount++; }
@@ -960,36 +699,37 @@ function collectKOMatchData(roundKey, match, result) {
     const total = g1 + g2;
     const margin = Math.abs(g1 - g2);
     const record = { t1, t2, g1, g2, round: label, aet: result.aet, penalties: result.penalties, scorers1: result.scorers1, scorers2: result.scorers2 };
-    tournamentStats.matches.push(record);
+    s.matches.push(record);
 
-    if (!tournamentStats.highestScoring || total > tournamentStats.highestScoring.total)
-        tournamentStats.highestScoring = { total, ...record };
-    if (!tournamentStats.biggestBlowout || margin > tournamentStats.biggestBlowout.margin)
-        tournamentStats.biggestBlowout = { margin, ...record };
-    if (result.penalties && !tournamentStats.marathonMatch)
-        tournamentStats.marathonMatch = record;
+    if (!s.highestScoring || total > s.highestScoring.total)
+        s.highestScoring = { total, ...record };
+    if (!s.biggestBlowout || margin > s.biggestBlowout.margin)
+        s.biggestBlowout = { margin, ...record };
+    if (result.penalties && !s.marathonMatch)
+        s.marathonMatch = record;
 
     // Check for Smash & Grab (winner had lower xG)
     if (g1 > g2 && xg1 < xg2) {
         const deficit = xg2 - xg1;
-        if (deficit > tournamentStats.biggestSmashAndGrab.deficit) {
-            tournamentStats.biggestSmashAndGrab = { winner: t1, loser: t2, score: `${g1}-${g2}`, deficit, xg1, xg2, round: label };
+        if (deficit > s.biggestSmashAndGrab.deficit) {
+            s.biggestSmashAndGrab = { winner: t1, loser: t2, score: `${g1}-${g2}`, deficit, xg1, xg2, round: label };
         }
     } else if (g2 > g1 && xg2 < xg1) {
         const deficit = xg1 - xg2;
-        if (deficit > tournamentStats.biggestSmashAndGrab.deficit) {
-            tournamentStats.biggestSmashAndGrab = { winner: t2, loser: t1, score: `${g2}-${g1}`, deficit, xg1, xg2, round: label };
+        if (deficit > s.biggestSmashAndGrab.deficit) {
+            s.biggestSmashAndGrab = { winner: t2, loser: t1, score: `${g2}-${g1}`, deficit, xg1, xg2, round: label };
         }
     }
 }
 
-function computeStageAssignments() {
+function computeStageAssignments(koState) {
+    const ks = koState || knockoutState;
     const allTeams = new Set();
     Object.values(groupsData).forEach(g => g.forEach(t => allTeams.add(t)));
 
     function teamsInRound(round) {
         const s = new Set();
-        (knockoutState[round] || []).forEach(m => {
+        (ks[round] || []).forEach(m => {
             if (m.t1) s.add(m.t1);
             if (m.t2) s.add(m.t2);
         });
@@ -1009,7 +749,7 @@ function computeStageAssignments() {
     qfS.forEach(t => map[t] = "Quarter-Finals");
     sfS.forEach(t => map[t] = "Semi-Finals");
     fS.forEach(t => map[t] = "Final");
-    if (knockoutState.champion) map[knockoutState.champion] = "Champion";
+    if (ks.champion) map[ks.champion] = "Champion";
     return map;
 }
 
@@ -1201,6 +941,16 @@ function finalizeAndSaveTournamentStats() {
     document.getElementById("stats-container").classList.remove("id-disabled");
 }
 
+// Extract flag emoji from team name (handles regional indicators and subdivision flags like England)
+function extractFlagEmoji(teamName) {
+    if (!teamName) return '';
+    const regionalMatch = teamName.match(/[\u{1F1E6}-\u{1F1FF}]{2}/u);
+    if (regionalMatch) return regionalMatch[0];
+    const subdivisionMatch = teamName.match(/\u{1F3F4}[\u{E0020}-\u{E007F}]+/u);
+    if (subdivisionMatch) return subdivisionMatch[0];
+    return '';
+}
+
 function renderTournamentStats() {
     const container = document.getElementById("stats-container");
     if (!container || !tournamentStats || !tournamentStats.summary) return;
@@ -1216,7 +966,7 @@ function renderTournamentStats() {
         s.goldenBootTop3.forEach((tier, idx) => {
             const isGold = idx === 0;
             tier.players.forEach(p => {
-                const flag = p.team ? p.team.match(/[\u{1F1E6}-\u{1F1FF}]{2}/u)?.[0] || '' : '';
+                const flag = extractFlagEmoji(p.team);
                 html += `<div style="background: var(--card-bg); border: 2px solid ${tier.color}; border-radius: 10px; padding: 16px 24px; text-align: center; min-width: 150px; ${isGold ? 'transform: scale(1.08);' : ''}">
                     <div style="font-size: 1.8rem;">${tier.medal}</div>
                     <div style="font-size: 1.4rem; margin: 4px 0;">${flag}</div>
@@ -1230,7 +980,7 @@ function renderTournamentStats() {
 
     // Tin Medal — highest GPG player who bageled
     if (s.tinMedal) {
-        const flag = s.tinMedal.team.match(/[\u{1F1E6}-\u{1F1FF}]{2}/u)?.[0] || '';
+        const flag = extractFlagEmoji(s.tinMedal.team);
         html += `<div style="grid-column: 1 / -1; display: flex; justify-content: center;">
             <div style="background: var(--card-bg); border: 2px solid #8a8a8a; border-radius: 10px; padding: 12px 24px; text-align: center; min-width: 200px; opacity: 0.75;">
                 <div style="font-size: 1.4rem;">&#x1f947; ...wait, no. &#x1f4e6;</div>
@@ -1410,11 +1160,12 @@ function renderTournamentStats() {
     container.innerHTML = html;
 }
 
-function pushToNextRound(currentRound, matchId, selectedTeam) {
-    const prevWinner = knockoutState[currentRound][matchId].winner;
-    knockoutState[currentRound][matchId].winner = selectedTeam;
+function pushToNextRound(currentRound, matchId, selectedTeam, koState, skipRender) {
+    const ks = koState || knockoutState;
+    const prevWinner = ks[currentRound][matchId].winner;
+    ks[currentRound][matchId].winner = selectedTeam;
 
-    if (prevWinner && prevWinner !== selectedTeam) resetDownstream(prevWinner);
+    if (prevWinner && prevWinner !== selectedTeam) resetDownstream(prevWinner, ks);
 
     if (currentRound === "r32") {
         const r16Map = {
@@ -1428,37 +1179,38 @@ function pushToNextRound(currentRound, matchId, selectedTeam) {
             12: { nextId: 7, slot: 't1' }, 14: { nextId: 7, slot: 't2' }
         };
         let target = r16Map[matchId];
-        if (target) knockoutState.r16[target.nextId][target.slot] = selectedTeam;
+        if (target) ks.r16[target.nextId][target.slot] = selectedTeam;
 
     } else if (currentRound === "r16") {
         let nextMatchId = Math.floor(matchId / 2);
-        if (matchId % 2 === 0) knockoutState.qf[nextMatchId].t1 = selectedTeam;
-        else knockoutState.qf[nextMatchId].t2 = selectedTeam;
+        if (matchId % 2 === 0) ks.qf[nextMatchId].t1 = selectedTeam;
+        else ks.qf[nextMatchId].t2 = selectedTeam;
 
     } else if (currentRound === "qf") {
         let nextMatchId = Math.floor(matchId / 2);
-        if (matchId % 2 === 0) knockoutState.sf[nextMatchId].t1 = selectedTeam;
-        else knockoutState.sf[nextMatchId].t2 = selectedTeam;
+        if (matchId % 2 === 0) ks.sf[nextMatchId].t1 = selectedTeam;
+        else ks.sf[nextMatchId].t2 = selectedTeam;
 
     } else if (currentRound === "sf") {
-        if (matchId === 0) knockoutState.f[0].t1 = selectedTeam;
-        else knockoutState.f[0].t2 = selectedTeam;
+        if (matchId === 0) ks.f[0].t1 = selectedTeam;
+        else ks.f[0].t2 = selectedTeam;
 
     } else if (currentRound === "f") {
-        knockoutState.champion = selectedTeam;
+        ks.champion = selectedTeam;
     }
-    renderBracket();
+    if (!skipRender) renderBracket();
 }
 
-function resetDownstream(teamName) {
+function resetDownstream(teamName, koState) {
+    const ks = koState || knockoutState;
     const rounds = ["r16", "qf", "sf", "f"];
     rounds.forEach(r => {
-        knockoutState[r].forEach(m => {
+        ks[r].forEach(m => {
             if (m.t1 === teamName) { m.t1 = null; m.winner = null; m.s1 = ""; m.aet = false; m.aet_s1 = 0; m.aet_s2 = 0; m.penalties = false; m.pen_s1 = 0; m.pen_s2 = 0; }
             if (m.t2 === teamName) { m.t2 = null; m.winner = null; m.s2 = ""; m.aet = false; m.aet_s1 = 0; m.aet_s2 = 0; m.penalties = false; m.pen_s1 = 0; m.pen_s2 = 0; }
         });
     });
-    if (knockoutState.champion === teamName) knockoutState.champion = null;
+    if (ks.champion === teamName) ks.champion = null;
 }
 
 function resetAll() {
@@ -1466,12 +1218,351 @@ function resetAll() {
     savedGroupTables = null;
     savedBestThirdPlaces = null;
     tournamentStats = null;
+    // Hide multi-sim container and show single-tournament sections
+    const multiSimContainer = document.getElementById("multi-sim-container");
+    if (multiSimContainer) multiSimContainer.style.display = "none";
+    const multiSimProgress = document.getElementById("multi-sim-progress");
+    if (multiSimProgress) multiSimProgress.style.display = "none";
+    // Re-enable single-tournament sections if hidden by multi-sim
+    const groupStageSection = document.querySelector('.stage-section');
+    if (groupStageSection) groupStageSection.style.display = '';
     const koSection = document.getElementById("knockout-section");
-    if (koSection) koSection.classList.add("id-disabled");
+    if (koSection) { koSection.style.display = ''; koSection.classList.add("id-disabled"); }
     const tablesContainer = document.getElementById("group-tables-container");
-    if (tablesContainer) { tablesContainer.classList.add("id-disabled"); tablesContainer.innerHTML = ""; }
+    if (tablesContainer) { tablesContainer.style.display = ''; tablesContainer.classList.add("id-disabled"); tablesContainer.innerHTML = ""; }
     const statsContainer = document.getElementById("stats-container");
-    if (statsContainer) { statsContainer.classList.add("id-disabled"); statsContainer.innerHTML = ""; }
+    if (statsContainer) { statsContainer.style.display = ''; statsContainer.classList.add("id-disabled"); statsContainer.innerHTML = ""; }
+    // Restore hr elements
+    document.querySelectorAll('hr').forEach(el => el.style.display = '');
     renderGroupStage();
     renderBracket();
+}
+
+// =====================================================================
+// Headless Simulation Functions (for Multi-Tournament Mode)
+// =====================================================================
+
+// Compute group stage results from a fixture map (no DOM reads)
+function computeGroupStageResults(fixtureMap) {
+    let tableData = {};
+    let thirdPlaceTeams = [];
+
+    Object.keys(groupsData).forEach(g => {
+        groupsData[g].forEach(team => {
+            tableData[team] = { name: team, group: g, points: 0, gd: 0, gf: 0 };
+        });
+    });
+
+    Object.keys(fixtureMap).forEach(g => {
+        fixtureMap[g].forEach(f => {
+            const t1 = f.t1, t2 = f.t2, g1 = f.g1, g2 = f.g2;
+            tableData[t1].gf += g1; tableData[t2].gf += g2;
+            tableData[t1].gd += (g1 - g2); tableData[t2].gd += (g2 - g1);
+            if (g1 > g2) { tableData[t1].points += 3; }
+            else if (g2 > g1) { tableData[t2].points += 3; }
+            else { tableData[t1].points += 1; tableData[t2].points += 1; }
+        });
+    });
+
+    let groupResults = {};
+    Object.keys(groupsData).forEach(g => {
+        let groupTeams = groupsData[g].map(t => tableData[t]);
+        groupTeams.sort((a, b) => b.points - a.points || b.gd - a.gd || b.gf - a.gf);
+
+        groupResults[g] = {
+            1: groupTeams[0].name,
+            2: groupTeams[1].name,
+            3: groupTeams[2].name,
+            4: groupTeams[3].name
+        };
+        thirdPlaceTeams.push({ team: groupTeams[2].name, group: g, points: groupTeams[2].points, gd: groupTeams[2].gd });
+    });
+
+    thirdPlaceTeams.sort((a, b) => b.points - a.points || b.gd - a.gd);
+    let best8ThirdPlaces = thirdPlaceTeams.slice(0, 8);
+    return { groupResults, best8ThirdPlaces };
+}
+
+// Build a fresh knockout bracket from group results (no global knockoutState dependency)
+function buildKnockoutBracket(groupResults, best8ThirdPlaces) {
+    let get3rd = (idx) => best8ThirdPlaces[idx] ? best8ThirdPlaces[idx].team : `3rd Place Pool #${idx + 1}`;
+
+    const officialR32Layout = [
+        { id: 0, matchNo: 73, t1: groupResults['A'][2], t2: groupResults['B'][2] },
+        { id: 1, matchNo: 74, t1: groupResults['E'][1], t2: get3rd(0) },
+        { id: 2, matchNo: 75, t1: groupResults['F'][1], t2: groupResults['C'][2] },
+        { id: 3, matchNo: 76, t1: groupResults['C'][1], t2: groupResults['F'][2] },
+        { id: 4, matchNo: 77, t1: groupResults['I'][1], t2: get3rd(1) },
+        { id: 5, matchNo: 78, t1: groupResults['E'][2], t2: groupResults['I'][2] },
+        { id: 7, matchNo: 80, t1: groupResults['L'][1], t2: get3rd(3) },
+        { id: 6, matchNo: 79, t1: groupResults['A'][1], t2: get3rd(2) },
+        { id: 8, matchNo: 81, t1: groupResults['D'][1], t2: get3rd(4) },
+        { id: 9, matchNo: 82, t1: groupResults['G'][1], t2: get3rd(5) },
+        { id: 10, matchNo: 83, t1: groupResults['K'][2], t2: groupResults['L'][2] },
+        { id: 11, matchNo: 84, t1: groupResults['H'][1], t2: groupResults['J'][2] },
+        { id: 12, matchNo: 85, t1: groupResults['B'][1], t2: get3rd(6) },
+        { id: 13, matchNo: 86, t1: groupResults['J'][1], t2: groupResults['H'][2] },
+        { id: 14, matchNo: 87, t1: groupResults['K'][1], t2: get3rd(7) },
+        { id: 15, matchNo: 88, t1: groupResults['D'][2], t2: groupResults['G'][2] }
+    ];
+
+    const blankMatch = () => ({ t1: null, t2: null, winner: null, s1: "", s2: "", aet: false, aet_s1: 0, aet_s2: 0, penalties: false, pen_s1: 0, pen_s2: 0, scorers1: [], scorers2: [] });
+
+    let koState = {
+        r32: [],
+        r16: Array(8).fill(null).map((_, i) => ({ id: i, ...blankMatch() })),
+        qf: Array(4).fill(null).map((_, i) => ({ id: i, ...blankMatch() })),
+        sf: Array(2).fill(null).map((_, i) => ({ id: i, ...blankMatch() })),
+        f: [{ id: 0, ...blankMatch() }],
+        champion: null
+    };
+
+    officialR32Layout.forEach(m => {
+        koState.r32.push({
+            id: m.id, matchNo: m.matchNo, t1: m.t1, t2: m.t2,
+            winner: null, s1: "", s2: "",
+            aet: false, aet_s1: 0, aet_s2: 0,
+            penalties: false, pen_s1: 0, pen_s2: 0,
+            scorers1: [], scorers2: []
+        });
+    });
+
+    return koState;
+}
+
+// Run all knockout rounds on a local koState, collecting match data into stats
+function simulateKnockoutStage(koState, stats) {
+    const rounds = ["r32", "r16", "qf", "sf", "f"];
+    rounds.forEach(roundKey => {
+        if (koState[roundKey]) {
+            koState[roundKey].forEach(match => {
+                if (match.t1 && match.t2) {
+                    const result = simulateKnockoutMatchFull(match.t1, match.t2, roundKey);
+                    match.s1 = result.s1;
+                    match.s2 = result.s2;
+                    match.aet = result.aet;
+                    match.aet_s1 = result.aet_s1;
+                    match.aet_s2 = result.aet_s2;
+                    match.penalties = result.penalties;
+                    match.pen_s1 = result.pen_s1;
+                    match.pen_s2 = result.pen_s2;
+                    match.scorers1 = result.scorers1;
+                    match.scorers2 = result.scorers2;
+                    pushToNextRound(roundKey, match.id, result.winner, koState, true);
+                    collectKOMatchData(roundKey, match, result, stats);
+                }
+            });
+        }
+    });
+}
+
+// Run a single headless tournament simulation, returning results
+function runSingleHeadlessSimulation() {
+    const stats = initTournamentStats({});
+    const fixtureMap = {};
+
+    // Build fixture map for all 12 groups
+    Object.keys(groupsData).forEach(groupName => {
+        const teams = groupsData[groupName];
+        const fixtures = [
+            [teams[0], teams[1]], [teams[2], teams[3]],
+            [teams[0], teams[2]], [teams[1], teams[3]],
+            [teams[0], teams[3]], [teams[1], teams[2]]
+        ];
+        fixtureMap[groupName] = [];
+
+        fixtures.forEach(([t1, t2]) => {
+            const { g1, g2, team1_xG, team2_xG, eloProb, scorers1, scorers2 } = simulateEloMatch(t1, t2);
+            fixtureMap[groupName].push({ t1, t2, g1, g2 });
+            collectGroupMatchData(t1, t2, g1, g2, team1_xG, team2_xG, eloProb, scorers1, scorers2, stats);
+        });
+    });
+
+    const { groupResults, best8ThirdPlaces } = computeGroupStageResults(fixtureMap);
+    const koState = buildKnockoutBracket(groupResults, best8ThirdPlaces);
+    simulateKnockoutStage(koState, stats);
+
+    const stageMap = computeStageAssignments(koState);
+
+    // Assign stages to teams in stats
+    Object.keys(stats.teams).forEach(team => {
+        stats.teams[team].stage = stageMap[team] || "Group Stage";
+    });
+
+    return { stats, stageMap, champion: koState.champion };
+}
+
+// =====================================================================
+// Multi-Tournament Simulation Orchestrator
+// =====================================================================
+
+function runMultiSimulation(numSims) {
+    // Hide single-tournament UI
+    const groupStageSection = document.querySelector('.stage-section');
+    if (groupStageSection) groupStageSection.style.display = 'none';
+    const tablesContainer = document.getElementById("group-tables-container");
+    if (tablesContainer) { tablesContainer.style.display = 'none'; tablesContainer.innerHTML = ""; }
+    const koSection = document.getElementById("knockout-section");
+    if (koSection) koSection.style.display = 'none';
+    const statsContainer = document.getElementById("stats-container");
+    if (statsContainer) { statsContainer.style.display = 'none'; statsContainer.innerHTML = ""; }
+    // Hide hr elements between sections
+    document.querySelectorAll('hr').forEach(el => el.style.display = 'none');
+
+    // Show progress
+    const progressEl = document.getElementById("multi-sim-progress");
+    if (progressEl) {
+        progressEl.style.display = "block";
+        progressEl.innerText = "0 / " + numSims + " tournaments";
+    }
+
+    // Aggregators
+    const teamCounters = {};
+    const goldenBootWins = {};
+
+    // Initialize all teams
+    Object.values(groupsData).forEach(group => {
+        group.forEach(team => {
+            teamCounters[team] = { winCount: 0, finalCount: 0, semiCount: 0, qfCount: 0 };
+        });
+    });
+
+    let completed = 0;
+    const BATCH_SIZE = 50;
+
+    function processBatch() {
+        const batchEnd = Math.min(completed + BATCH_SIZE, numSims);
+        for (let i = completed; i < batchEnd; i++) {
+            const result = runSingleHeadlessSimulation();
+            const s = result.stats;
+            const stageMap = result.stageMap;
+
+            // Aggregate team advancement data
+            Object.keys(teamCounters).forEach(team => {
+                const stage = stageMap[team] || "Group Stage";
+                if (stage === "Champion") teamCounters[team].winCount++;
+                if (stage === "Champion" || stage === "Final") teamCounters[team].finalCount++;
+                if (stage === "Champion" || stage === "Final" || stage === "Semi-Finals") teamCounters[team].semiCount++;
+                if (stage === "Champion" || stage === "Final" || stage === "Semi-Finals" || stage === "Quarter-Finals") teamCounters[team].qfCount++;
+            });
+
+            // Compute per-simulation top scorers (Golden Boot winner)
+            const simGoalTally = {};
+            const simPlayerTeam = {};
+            s.matches.forEach(m => {
+                if (m.scorers1) {
+                    m.scorers1.forEach(name => {
+                        if (name !== "Own Goal" && name !== "Squad Player") {
+                            simGoalTally[name] = (simGoalTally[name] || 0) + 1;
+                            simPlayerTeam[name] = m.t1;
+                        }
+                    });
+                }
+                if (m.scorers2) {
+                    m.scorers2.forEach(name => {
+                        if (name !== "Own Goal" && name !== "Squad Player") {
+                            simGoalTally[name] = (simGoalTally[name] || 0) + 1;
+                            simPlayerTeam[name] = m.t2;
+                        }
+                    });
+                }
+            });
+            // Find max goals and award wins to all tied top scorers
+            let maxGoals = 0;
+            Object.values(simGoalTally).forEach(g => { if (g > maxGoals) maxGoals = g; });
+            if (maxGoals > 0) {
+                Object.entries(simGoalTally).forEach(([name, goals]) => {
+                    if (goals === maxGoals) {
+                        const team = simPlayerTeam[name];
+                        const key = name + "|" + team;
+                        if (!goldenBootWins[key]) goldenBootWins[key] = { player: name, team, wins: 0 };
+                        goldenBootWins[key].wins++;
+                    }
+                });
+            }
+        }
+
+        completed = batchEnd;
+
+        // Update progress
+        if (progressEl) {
+            progressEl.innerText = completed + " / " + numSims + " tournaments";
+        }
+
+        if (completed < numSims) {
+            setTimeout(processBatch, 0);
+        } else {
+            displayMultiSimResults(teamCounters, goldenBootWins, numSims);
+        }
+    }
+
+    // Start processing in batches
+    setTimeout(processBatch, 50);
+}
+
+function displayMultiSimResults(teamResults, goldenBootWins, numSims) {
+    const container = document.getElementById("multi-sim-container");
+    if (!container) return;
+    container.style.display = "block";
+
+    // Build team table HTML
+    const teamEntries = Object.entries(teamResults).map(([team, counters]) => ({
+        team,
+        rank: teamFifaRankings[team] || 999,
+        group: Object.keys(groupsData).find(g => groupsData[g].includes(team)) || "?",
+        winPct: (counters.winCount / numSims) * 100,
+        finalPct: (counters.finalCount / numSims) * 100,
+        semiPct: (counters.semiCount / numSims) * 100,
+        qfPct: (counters.qfCount / numSims) * 100
+    }));
+
+    // Sort by win% descending, then final%, then semi%, then qf%
+    teamEntries.sort((a, b) => b.winPct - a.winPct || b.finalPct - a.finalPct || b.semiPct - a.semiPct || b.qfPct - a.qfPct);
+
+    let teamHtml = '<div class="multi-sim-table"><h3>Advancement Probabilities (based on ' + numSims + ' simulations)</h3>';
+    teamHtml += '<table><tr><th>#</th><th>Team</th><th>FIFA Rank</th><th>Group</th><th>Win %</th><th>Final %</th><th>Semi %</th><th>QF %</th></tr>';
+
+    teamEntries.forEach((entry, idx) => {
+        const winPctClass = entry.winPct >= 5 ? 'pct-high' : entry.winPct >= 1 ? 'pct-mid' : '';
+        const finalPctClass = entry.finalPct >= 15 ? 'pct-high' : entry.finalPct >= 5 ? 'pct-mid' : '';
+        const semiPctClass = entry.semiPct >= 25 ? 'pct-high' : entry.semiPct >= 10 ? 'pct-mid' : '';
+        const qfPctClass = entry.qfPct >= 40 ? 'pct-high' : entry.qfPct >= 20 ? 'pct-mid' : '';
+        teamHtml += '<tr>' +
+            '<td class="rank-col">' + (idx + 1) + '</td>' +
+            '<td>' + entry.team + '</td>' +
+            '<td>' + entry.rank + '</td>' +
+            '<td>' + entry.group + '</td>' +
+            '<td class="' + winPctClass + '">' + entry.winPct.toFixed(1) + '%</td>' +
+            '<td class="' + finalPctClass + '">' + entry.finalPct.toFixed(1) + '%</td>' +
+            '<td class="' + semiPctClass + '">' + entry.semiPct.toFixed(1) + '%</td>' +
+            '<td class="' + qfPctClass + '">' + entry.qfPct.toFixed(1) + '%</td>' +
+            '</tr>';
+    });
+    teamHtml += '</table></div>';
+    document.getElementById("multi-sim-team-table").innerHTML = teamHtml;
+
+    // Build Golden Boot top 10 (by number of times won)
+    const gbEntries = Object.values(goldenBootWins)
+        .sort((a, b) => b.wins - a.wins)
+        .slice(0, 10);
+
+    let gbHtml = '<div class="multi-sim-table"><h3>Golden Boot Top 10 (Across All Simulations)</h3>';
+    gbHtml += '<table><tr><th>#</th><th>Player</th><th>Nation</th><th>Times Won</th><th>Win Rate</th></tr>';
+
+    gbEntries.forEach((entry, idx) => {
+        const winRate = (entry.wins / numSims) * 100;
+        const goalClass = idx < 3 ? 'gold-high' : '';
+        gbHtml += '<tr>' +
+            '<td class="rank-col">' + (idx + 1) + '</td>' +
+            '<td>' + entry.player + '</td>' +
+            '<td>' + entry.team + '</td>' +
+            '<td class="' + goalClass + '">' + entry.wins + '</td>' +
+            '<td>' + winRate.toFixed(1) + '%</td>' +
+            '</tr>';
+    });
+    gbHtml += '</table></div>';
+    document.getElementById("multi-sim-golden-boot-table").innerHTML = gbHtml;
+
+    // Scroll to results
+    container.scrollIntoView({ behavior: 'smooth' });
 }
