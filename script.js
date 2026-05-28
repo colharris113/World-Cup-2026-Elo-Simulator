@@ -1135,7 +1135,7 @@ function renderTournamentStats() {
             const hostClass = m.usaLost ? 'badge-fraud' : 'pillar-sniper';
             html += `<div class="stats-card ${hostClass}" style="grid-column: 1 / -1;">
                 <h3>${resultLabel}</h3>
-                <div class="stats-value">&#x1f1fa;&#x1f1f8; USA ${m.usaScore} &minus; ${m.oppScore} ${renderTeam(m.opponent)}</div>
+                <div class="stats-value">${renderTeam("🇺🇸 United States")} ${m.usaScore} &minus; ${m.oppScore} ${renderTeam(m.opponent)}</div>
                 <div class="stats-detail">${m.round} &mdash; ${m.usaLost ? 'Lost by' : 'Won by'} ${m.margin} goal${m.margin > 1 ? 's' : ''}</div>
             </div>`;
         }
