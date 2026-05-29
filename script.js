@@ -79,19 +79,32 @@ function generateScorers(teamName, goals) {
     return scorers;
 }
 
-// Knuth-Poisson random goal generator
-function getPoissonGoals(lambda) {
-    const L = Math.exp(-lambda);
-    let k = 0;
-    let p = 1.0;
-    do {
-        k++;
-        p *= Math.random();
-    } while (p > L);
-    return k - 1;
+// Sample from a discrete probability distribution
+// distribution: array of { goals, prob } objects where prob sums to 1
+function sampleFromDistribution(distribution) {
+    const roll = Math.random();
+    let cumulative = 0;
+    for (const entry of distribution) {
+        cumulative += entry.prob;
+        if (roll < cumulative) return entry.goals;
+    }
+    return distribution[distribution.length - 1].goals;
 }
 
-// Simulate a match using Elo ratings with Poisson-distributed goals. Returns { g1, g2 }
+// Discrete distribution for total goals per match in 90 minutes
+const MATCH_GOAL_DISTRIBUTION = [
+    { goals: 0, prob: 0.1042 },
+    { goals: 1, prob: 0.1823 },
+    { goals: 2, prob: 0.2240 },
+    { goals: 3, prob: 0.2604 },
+    { goals: 4, prob: 0.0938 },
+    { goals: 5, prob: 0.0625 },
+    { goals: 6, prob: 0.0312 },
+    { goals: 7, prob: 0.0312 },
+    { goals: 8, prob: 0.0104 }
+];
+
+// Simulate a match using Elo ratings with discrete-distribution goals. Returns { g1, g2 }
 // Optionally accepts pre-computed Elos so callers can reuse the same home-team assignment.
 function simulateEloMatch(team1, team2, matchElos) {
     const { elo1, elo2 } = matchElos || getMatchElos(team1, team2);
@@ -114,22 +127,37 @@ function simulateEloMatch(team1, team2, matchElos) {
     let g1, g2;
 
     if (rand < team1WinProb) {
-        // Team 1 wins — generate Poisson goals until Team 1 > Team 2
-        do {
-            g1 = getPoissonGoals(team1_xG);
-            g2 = getPoissonGoals(team2_xG);
-        } while (g1 <= g2);
+        // Team 1 wins
+        let totalGoals = sampleFromDistribution(MATCH_GOAL_DISTRIBUTION);
+        if (totalGoals === 0) totalGoals = 1; // min 1-0 result
+        const winnerMin = Math.floor(totalGoals / 2) + 1;
+        const remaining = totalGoals - winnerMin;
+        // Distribute remaining goals with Elo-probability bias toward the winner
+        let winnerExtra = 0;
+        for (let i = 0; i < remaining; i++) {
+            if (Math.random() < eloProb) winnerExtra++;
+        }
+        g1 = winnerMin + winnerExtra;
+        g2 = totalGoals - g1;
     } else if (rand < team1WinProb + team2WinProb) {
         // Team 2 wins
-        do {
-            g1 = getPoissonGoals(team1_xG);
-            g2 = getPoissonGoals(team2_xG);
-        } while (g2 <= g1);
+        let totalGoals = sampleFromDistribution(MATCH_GOAL_DISTRIBUTION);
+        if (totalGoals === 0) totalGoals = 1; // min 0-1 result
+        const winnerMin = Math.floor(totalGoals / 2) + 1;
+        const remaining = totalGoals - winnerMin;
+        // Distribute remaining goals with Elo-probability bias toward the winner
+        let winnerExtra = 0;
+        for (let i = 0; i < remaining; i++) {
+            if (Math.random() < (1 - eloProb)) winnerExtra++;
+        }
+        g2 = winnerMin + winnerExtra;
+        g1 = totalGoals - g2;
     } else {
-        // Draw — balanced xG for realistic low-scoring draws (0-0, 1-1, 2-2)
-        const drawGoals = getPoissonGoals(1.1);
-        g1 = drawGoals;
-        g2 = drawGoals;
+        // Draw — split evenly (if odd, reduce by 1 so both teams get equal goals)
+        let totalGoals = sampleFromDistribution(MATCH_GOAL_DISTRIBUTION);
+        if (totalGoals % 2 !== 0) totalGoals -= 1;
+        g1 = totalGoals / 2;
+        g2 = totalGoals / 2;
     }
 
     return { g1, g2, team1_xG, team2_xG, eloProb, scorers1: generateScorers(team1, g1), scorers2: generateScorers(team2, g2) };
@@ -159,6 +187,14 @@ function simulateKnockoutMatchFull(team1, team2, round) {
     const etDiff = baseDiff * 1.25;
     const etEloProb = 1 / (1 + Math.pow(10, (-etDiff) / 600));
 
+    // Extra time total goals distribution (most ET periods are 0-0)
+    const etGoalDistribution = [
+        { goals: 0, prob: 0.70 },
+        { goals: 1, prob: 0.20 },
+        { goals: 2, prob: 0.08 },
+        { goals: 3, prob: 0.02 }
+    ];
+
     // 60% of extra-time periods still end in a draw.
     // Remaining 40% follows the adjusted Elo probability.
     const etDecidedProb = 0.4;
@@ -170,7 +206,10 @@ function simulateKnockoutMatchFull(team1, team2, round) {
 
     if (etRoll < etTeam1Prob) {
         // Team 1 wins in extra time
-        aet_s1 = 1 + Math.floor(Math.random() * 2); // 1-2 goals
+        let etTotal = sampleFromDistribution(etGoalDistribution);
+        if (etTotal === 0) etTotal = 1; // at least 1-0 in ET
+        aet_s1 = Math.floor(etTotal / 2) + 1;
+        aet_s2 = etTotal - aet_s1;
         return {
             s1, s2, aet: true, aet_s1, aet_s2,
             penalties: false, pen_s1: 0, pen_s2: 0,
@@ -180,7 +219,10 @@ function simulateKnockoutMatchFull(team1, team2, round) {
         };
     } else if (etRoll < etTeam1Prob + etTeam2Prob) {
         // Team 2 wins in extra time
-        aet_s2 = 1 + Math.floor(Math.random() * 2);
+        let etTotal = sampleFromDistribution(etGoalDistribution);
+        if (etTotal === 0) etTotal = 1; // at least 0-1 in ET
+        aet_s2 = Math.floor(etTotal / 2) + 1;
+        aet_s1 = etTotal - aet_s2;
         return {
             s1, s2, aet: true, aet_s1, aet_s2,
             penalties: false, pen_s1: 0, pen_s2: 0,
@@ -189,6 +231,12 @@ function simulateKnockoutMatchFull(team1, team2, round) {
             scorers1: generateScorers(team1, s1 + aet_s1), scorers2: generateScorers(team2, s2 + aet_s2)
         };
     }
+
+    // ET ended in a draw — sample ET goals and split evenly
+    let etTotal = sampleFromDistribution(etGoalDistribution);
+    if (etTotal % 2 !== 0) etTotal -= 1;
+    aet_s1 = etTotal / 2;
+    aet_s2 = etTotal / 2;
 
     // Step 3: Penalty shootout — pure coin toss weighted by kick order
     const team1KicksFirst = Math.random() < 0.5;
@@ -206,11 +254,11 @@ function simulateKnockoutMatchFull(team1, team2, round) {
     if (penWinner === team2 && pen_s2 <= pen_s1) pen_s2 = pen_s1 + 1 + Math.floor(Math.random() * 2);
 
     return {
-        s1, s2, aet: true, aet_s1: 0, aet_s2: 0,
+        s1, s2, aet: true, aet_s1, aet_s2,
         penalties: true, pen_s1, pen_s2,
         winner: penWinner,
         xg1, xg2, eloProb,
-        scorers1: generateScorers(team1, s1), scorers2: generateScorers(team2, s2)
+        scorers1: generateScorers(team1, s1 + aet_s1), scorers2: generateScorers(team2, s2 + aet_s2)
     };
 }
 
@@ -780,15 +828,22 @@ function finalizeAndSaveTournamentStats() {
     // Sniper Award — best goal difference
     const sniper = teamList.reduce((a, b) => (d[a].gf - d[a].ga) > (d[b].gf - d[b].ga) ? a : b);
 
-    // Cinderella Award — lowest Elo that reached furthest (at least R16)
-    const cinderellaCandidates = teamList.filter(t => STAGE_SCORE[d[t].stage] >= 2);
+    // Cinderella Award — most over-performing team (largest surplus of actual stage vs Elo-based expectation)
+    const cinderellaElos = teamList.map(t => d[t].elo);
+    const cinderellaMinElo = Math.min(...cinderellaElos);
+    const cinderellaMaxElo = Math.max(...cinderellaElos);
+    const cinderellaRange = cinderellaMaxElo - cinderellaMinElo;
+    const cinderellaCandidates = teamList.filter(t => STAGE_SCORE[d[t].stage] >= 2)
+        .map(t => ({
+            team: t,
+            surplus: STAGE_SCORE[d[t].stage] - (cinderellaRange > 0 ? ((d[t].elo - cinderellaMinElo) / cinderellaRange) * 6 : 0)
+        }));
     const cinderella = cinderellaCandidates.length
-        ? cinderellaCandidates.sort((a, b) =>
-            STAGE_SCORE[d[b].stage] - STAGE_SCORE[d[a].stage] || d[a].elo - d[b].elo)[0]
+        ? cinderellaCandidates.sort((a, b) => b.surplus - a.surplus)[0].team
         : null;
 
-    // Fraud Watch — highest Elo that went out earliest (at least R32, didn't win)
-    const fraudCandidates = teamList.filter(t => d[t].stage !== "Champion" && STAGE_SCORE[d[t].stage] >= 1);
+    // Fraud Watch — highest Elo that went out earliest (didn't win). No minimum stage filter.
+    const fraudCandidates = teamList.filter(t => d[t].stage !== "Champion");
     const fraudWatch = fraudCandidates.length
         ? fraudCandidates.sort((a, b) =>
             STAGE_SCORE[d[a].stage] - STAGE_SCORE[d[b].stage] || d[b].elo - d[a].elo)[0]
